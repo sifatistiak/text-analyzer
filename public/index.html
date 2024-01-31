@@ -16,13 +16,25 @@
         <label for="fileInput">Choose a text file:</label>
         <input type="file" id="fileInput" name="text_analyzer_file" accept=".txt">
         <br>
-        <button type="button" onclick="uploadFile()">Upload File</button>
+        <button type="button" onclick="processFile()">Upload File</button>
     </form>
 
     <div id="analyzedResult"></div>
 
     <script>
-        async function uploadFile() {
+        async function fetchData(url, method) {
+            const response = await fetch(url, { method });
+            return handleFetchErrors(response);
+        }
+
+        async function handleFetchErrors(response) {
+            if (!response.ok) {
+                throw new Error(`Request failed`);
+            }
+            return response.json();
+        }
+
+        async function processFile() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
 
@@ -40,20 +52,40 @@
                     body: formData,
                 });
 
-                if (!response.ok) {
-                    throw new Error(`File upload failed: ${response.statusText}`);
-                }
+                const data = await handleFetchErrors(response);
 
-                const data = await response.json();
-                const analyzedResultDiv = document.getElementById('analyzedResult');
+                // Fetch each type of data separately
+                const wordCountResponse = await fetchData('/api/words', 'GET');
+                const charCountResponse = await fetchData('/api/characters', 'GET');
+                const sentenceCountResponse = await fetchData('/api/sentences', 'GET');
+                const paragraphsCountResponse = await fetchData('/api/paragraphs', 'GET');
+                const longestWordResponse = await fetchData('/api/longestWords', 'GET');
 
+                const wordCount = wordCountResponse.words;
+                const charCount = charCountResponse.characters;
+                const sentenceCount = sentenceCountResponse.sentences;
+                const paragraphsCount = paragraphsCountResponse.paragraphs;
+                const longestWords = longestWordResponse.longestWords;
+
+                displayResults({ wordCount, charCount, sentenceCount, paragraphsCount, longestWords });
             } catch (error) {
-                console.error('Error uploading file:', error.message);
-                alert('Error uploading file. Please try again.');
+                console.error('Error uploading or processing file:', error.message);
+                alert('Error uploading or processing file. Please try again.');
             }
         }
+
+        function displayResults({ wordCount, charCount, sentenceCount, paragraphsCount, longestWords }) {
+            const analyzedResultDiv = document.getElementById('analyzedResult');
+            analyzedResultDiv.innerHTML = `
+            <h3>File processed successfully!</h3>
+            <p>Number of words: ${wordCount}</p>
+            <p>Number of characters: ${charCount}</p>
+            <p>Number of sentences: ${sentenceCount}</p>
+            <p>Number of paragraphs: ${paragraphsCount}</p>
+            <p>Longest words in paragraphs: ${longestWords}</p>
+        `;
+        }
     </script>
-    <script src="app.js"></script>
 </body>
 
 </html>
