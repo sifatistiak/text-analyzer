@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 function countWords(text) {
     return text.split(/\s+/).filter(word => word !== '').length;
 }
@@ -21,10 +23,20 @@ function findLongestWordsInParagraphs(text) {
     );
 }
 
+function readTextFromFile(filePath) {
+    try {
+        return fs.readFileSync(filePath, 'utf8');
+    } catch (error) {
+        console.error('Error reading text from file:', error.message);
+        return '';
+    }
+}
+
 module.exports = {
     countWords,
     countCharacters,
     countSentences,
     countParagraphs,
     findLongestWordsInParagraphs,
+    readTextFromFile,
 };

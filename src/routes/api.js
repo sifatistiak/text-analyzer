@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const analyzer = require('../utils/analyzer');
 
 const UPLOADS_DIR = './uploads/';
 
@@ -24,6 +25,7 @@ router.post('/upload', upload.single('text_analyzer_file'), (req, res) => {
     }
 
     const filePath = req.file.path;
+    const text = analyzer.readTextFromFile(filePath);
 
     res.json({ success: true });
 });
