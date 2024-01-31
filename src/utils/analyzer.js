@@ -1,4 +1,5 @@
 function countWords(text) {
+    return text.split(/\s+/).filter(word => word !== '').length;
 }
 
 function countCharacters(text) {
