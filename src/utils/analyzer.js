@@ -15,6 +15,10 @@ function countParagraphs(text) {
 }
 
 function findLongestWordsInParagraphs(text) {
+    const paragraphs = text.split('\n').filter(paragraph => paragraph !== '');
+    return paragraphs.map(paragraph =>
+        paragraph.split(/\s+/).reduce((longest, word) => (word.length > longest.length ? word : longest), '')
+    );
 }
 
 module.exports = {
