@@ -3,6 +3,7 @@ function countWords(text) {
 }
 
 function countCharacters(text) {
+    return text.replace(/\s/g, '').length;
 }
 
 function countSentences(text) {
