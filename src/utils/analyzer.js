@@ -11,6 +11,7 @@ function countSentences(text) {
 }
 
 function countParagraphs(text) {
+    return text.split('\n').filter(paragraph => paragraph !== '').length;
 }
 
 function findLongestWordsInParagraphs(text) {
