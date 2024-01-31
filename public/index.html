@@ -12,15 +12,47 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Text Analyzer</h1>
-        <form action="/api/upload" method="post" enctype="multipart/form-data">
-            <input type="file" id="fileInput" name="text_analyzer_file" accept=".txt" />
-            <input type="submit" value="Proceed to analyze" />
-        </form>
+    <form id="uploadForm">
+        <label for="fileInput">Choose a text file:</label>
+        <input type="file" id="fileInput" name="text_analyzer_file" accept=".txt">
+        <br>
+        <button type="button" onclick="uploadFile()">Upload File</button>
+    </form>
 
-    </div>
+    <div id="analyzedResult"></div>
 
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please choose a file.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('text_analyzer_file', file);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`File upload failed: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const analyzedResultDiv = document.getElementById('analyzedResult');
+
+            } catch (error) {
+                console.error('Error uploading file:', error.message);
+                alert('Error uploading file. Please try again.');
+            }
+        }
+    </script>
     <script src="app.js"></script>
 </body>
 
