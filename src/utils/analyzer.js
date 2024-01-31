@@ -7,6 +7,7 @@ function countCharacters(text) {
 }
 
 function countSentences(text) {
+    return text.split(/[.!?]/).filter(sentence => sentence !== '').length;
 }
 
 function countParagraphs(text) {
